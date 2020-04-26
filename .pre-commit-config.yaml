@@ -1,5 +1,5 @@
 - repo: git://github.com/antonbabenko/pre-commit-terraform
-  rev: <VERSION> # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  rev: v1.30.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
   hooks:
     - id: terraform_fmt
     - id: terraform_docs
