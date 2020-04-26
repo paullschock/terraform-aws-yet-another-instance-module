@@ -4,7 +4,7 @@ resource "aws_instance" "ubuntu" {
   instance_type = var.instance_type == "" ? "t3a.micro" : var.instance_type
 
   tags = {
-    Name = "ubuntu-${random_pet.ubuntu.id}"
+    Name            = "ubuntu-${random_pet.ubuntu.id}"
     ubuntu_ami_name = local.ubuntu_ami_name
   }
 }

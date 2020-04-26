@@ -1,4 +1,4 @@
 module "ubuntu" {
-    source = "./ubuntu/"
-    aws_region = var.aws_region
+  source     = "./ubuntu/"
+  aws_region = var.aws_region
 }
