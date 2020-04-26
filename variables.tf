@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "instance_size" {
-    type        = string
-    default     = ""
-    description = "Provide an input if you wish to override the default 't3a.medium' selection"
+  type        = string
+  default     = ""
+  description = "Provide an input if you wish to override the default 't3a.medium' selection"
 }
