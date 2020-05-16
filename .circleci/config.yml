@@ -9,12 +9,11 @@ jobs:
       - run:
           name: terraform-validate
           command: |
-            ls -la
-            pwd
             git clone https://github.com/tfutils/tfenv.git ~/.tfenv
             export PATH="$HOME/.tfenv/bin:$PATH"
             export TF_CURL_OUTPUT=1
-            tfenv install
+            tfenv install min-required
+            tfenv use
             terraform validate
 
 orbs:
