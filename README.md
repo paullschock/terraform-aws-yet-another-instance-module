@@ -12,7 +12,8 @@ Repo serves to various terraform toolsets.
 
 | Name | Version |
 |------|---------|
-| terraform | 0.12.24 |
+| terraform | <= 0.12.24, >= 0.12 |
+| aws | ~> 2.62 |
 
 ## Providers
 
