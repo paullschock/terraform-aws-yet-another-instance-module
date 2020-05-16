@@ -9,12 +9,18 @@ jobs:
       - run:
           name: terraform-validate
           command: |
+            curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
+            sudo apt install ./keybase_amd64.deb
+            run_keybase
             git clone https://github.com/tfutils/tfenv.git ~/.tfenv
             export PATH="$HOME/.tfenv/bin:$PATH"
             export TF_CURL_OUTPUT=1
             tfenv install min-required
             tfenv use
+            terraform version
+            terraform init
             terraform validate
+
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
