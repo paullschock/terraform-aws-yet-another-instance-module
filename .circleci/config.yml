@@ -46,8 +46,10 @@ jobs:
           name: pre-commit_run
           command: |
              export PATH="$HOME/.tfenv/bin:$PATH"
+             export TF_LOG=INFO
              tfenv use
              terraform version
+             terraform init
              pre-commit run --all-files
 
 
