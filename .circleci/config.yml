@@ -1,0 +1,62 @@
+version: 2.1
+jobs:
+  run_pre-commit-terraform_hooks:
+    docker:
+      - image: 'circleci/golang:latest'
+    steps:
+      - checkout
+      - aws-cli/install
+      - run:
+          name: configure_terraform_env
+          command: |
+            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+            export PATH="$HOME/.tfenv/bin:$PATH"
+            export TF_CURL_OUTPUT=1
+            if ls -a | grep .tf | grep -w "required_version" *.tf; then
+              echo "Found required_version declaration, using min-required"
+              tfenv install min-required
+            else
+              echo "No required_version declaration, using latest"
+              tfenv install latest
+            fi
+            tfenv use
+            terraform version
+      - run:
+          name: setup_pre-commit
+          command: |
+            sudo apt-get install software-properties-common -y
+            sudo add-apt-repository ppa:deadsnakes/ppa -y
+            sudo apt-get install python3.7 python3-pip gawk -y
+            pip3 install pre-commit
+            pre-commit --version
+            if ls -a | grep .pre-commit-config.yaml; then
+              echo "Found .pre-commit-config.yaml!"
+              pre-commit install
+            else
+              echo "No .pre-commit-config.yaml found, exiting"
+              return 1
+            fi
+      - run:
+          name: setup_pre-commit-terraform_hook_depends
+          command: |
+            curl -L "$(curl -s https://api.github.com/repos/segmentio/terraform-docs/releases/latest | grep -o -E "https://.+?-linux-amd64")" > terraform-docs && chmod +x terraform-docs && sudo mv terraform-docs /usr/bin/
+            curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip && sudo mv tflint /usr/bin/
+            env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec
+      - run:
+          name: pre-commit_run
+          command: |
+             export PATH="$HOME/.tfenv/bin:$PATH"
+             tfenv use
+             terraform version
+             pre-commit run --all-files
+
+
+workflows:
+  version: 2
+  test_my_terraform_module:
+    jobs:
+      - run_pre-commit-terraform_hooks
+
+
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
