@@ -9,7 +9,6 @@ jobs:
       - run:
           name: configure_terraform_env
           command: |
-            set -x
             git clone https://github.com/tfutils/tfenv.git ~/.tfenv
             export PATH="$HOME/.tfenv/bin:$PATH"
             export TF_CURL_OUTPUT=1
@@ -25,9 +24,8 @@ jobs:
       - run:
           name: setup_pre-commit
           command: |
-            set -x
-            sudo apt-get install software-properties-common
-            sudo add-apt-repository ppa:deadsnakes/ppa
+            sudo apt-get install software-properties-common -y
+            sudo add-apt-repository ppa:deadsnakes/ppa -y
             sudo apt-get update -y
             sudo apt-get install python3.7 python3-pip -y
             pip3 install pre-commit
