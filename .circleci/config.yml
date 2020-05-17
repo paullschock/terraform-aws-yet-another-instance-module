@@ -9,17 +9,15 @@ jobs:
       - run:
           name: configure_terraform_env
           command: |
-            curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
-            sudo apt install ./keybase_amd64.deb
-            run_keybase
+            set -x
             git clone https://github.com/tfutils/tfenv.git ~/.tfenv
             export PATH="$HOME/.tfenv/bin:$PATH"
             export TF_CURL_OUTPUT=1
-            ls -a | grep .tf | grep -w "required_version" *.tf
-            retVal=$?
-            if [ $retVal -eq 0 ]; then
+            if ls -a | grep .tf | grep -w "required_version" *.tf; then
+              echo "Found required_version declaration, using min-required"
               tfenv install min-required
             else
+              echo "No required_version declaration, using latest"
               tfenv install latest
             fi
             tfenv use
@@ -27,6 +25,7 @@ jobs:
       - run:
           name: setup_pre-commit
           command: |
+            set -x
             sudo apt-get install software-properties-common
             sudo add-apt-repository ppa:deadsnakes/ppa
             sudo apt-get update -y
