@@ -3,6 +3,8 @@ jobs:
   run_pre-commit-terraform_hooks:
     docker:
       - image: 'circleci/golang:latest'
+    environment:
+      AWS_DEFAULT_REGION: us-west-2
     steps:
       - checkout
       - aws-cli/install
@@ -12,7 +14,7 @@ jobs:
             git clone https://github.com/tfutils/tfenv.git ~/.tfenv
             export PATH="$HOME/.tfenv/bin:$PATH"
             export TF_CURL_OUTPUT=1
-            if ls -a | grep .tf | grep -w "required_version" *.tf; then
+            if [[ $(ls -a | grep .tf | grep -w "required_version" *.tf | wc -l) -ge 1 ]]; then
               echo "Found required_version declaration, using min-required"
               tfenv install min-required
             else
@@ -46,8 +48,10 @@ jobs:
           name: pre-commit_run
           command: |
              export PATH="$HOME/.tfenv/bin:$PATH"
+             export TF_LOG=TRACE
              tfenv use
              terraform version
+             terraform init
              pre-commit run --all-files
 
 
