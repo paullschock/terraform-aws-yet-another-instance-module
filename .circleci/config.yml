@@ -40,6 +40,15 @@ jobs:
               echo "No .pre-commit-config.yaml found, exiting"
               return 1
             fi
+      - run:
+          name: pre-commit_run
+          command: pre-commit run --all-files
+
+worksflows:
+  version: 2
+  test_my_terraform_module:
+    jobs:
+      - run_pre-commit-terraform_hooks
 
 
 orbs:
