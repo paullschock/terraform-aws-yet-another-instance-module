@@ -3,6 +3,8 @@ jobs:
   run_pre-commit-terraform_hooks:
     docker:
       - image: 'circleci/golang:latest'
+    environment:
+      AWS_DEFAULT_REGION: us-west-2
     steps:
       - checkout
       - aws-cli/install
@@ -46,7 +48,7 @@ jobs:
           name: pre-commit_run
           command: |
              export PATH="$HOME/.tfenv/bin:$PATH"
-             export TF_LOG=INFO
+             export TF_LOG=TRACE
              tfenv use
              terraform version
              terraform init
