@@ -26,7 +26,7 @@ jobs:
           command: |
             sudo apt-get install software-properties-common -y
             sudo add-apt-repository ppa:deadsnakes/ppa -y
-            sudo apt-get install python3.7 python3-pip -y
+            sudo apt-get install python3.7 python3-pip gawk -y
             pip3 install pre-commit
             pre-commit --version
             if ls -a | grep .pre-commit-config.yaml; then
@@ -37,8 +37,18 @@ jobs:
               return 1
             fi
       - run:
+          name: setup_pre-commit-terraform_hook_depends
+          command: |
+            curl -L "$(curl -s https://api.github.com/repos/segmentio/terraform-docs/releases/latest | grep -o -E "https://.+?-linux-amd64")" > terraform-docs && chmod +x terraform-docs && sudo mv terraform-docs /usr/bin/
+            curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip && sudo mv tflint /usr/bin/
+            env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec
+      - run:
           name: pre-commit_run
-          command: pre-commit run --all-files
+          command: |
+             tfenv use
+             terraform version
+             pre-commit run --all-files
+
 
 workflows:
   version: 2
