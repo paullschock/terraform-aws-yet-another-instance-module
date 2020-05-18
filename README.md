@@ -18,7 +18,10 @@ Repo serves to various terraform toolsets.
 
 ## Providers
 
-No provider.
+| Name | Version |
+|------|---------|
+| aws | ~> 2.62 |
+| random | n/a |
 
 ## Inputs
 
